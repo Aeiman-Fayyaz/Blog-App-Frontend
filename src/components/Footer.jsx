@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Github, Twitter, Globe, Heart } from 'lucide-react';
+import { Sparkles, GithubIcon, TwitterIcon, Globe, Heart } from "lucide-react";
 
 const Footer = () => {
   const [email, setEmail] = useState('');

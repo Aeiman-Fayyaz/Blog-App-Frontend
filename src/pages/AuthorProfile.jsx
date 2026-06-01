@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import API from '../utils/api';
-import BlogCard from '../components/BlogCard';
-import { BlogCardSkeleton } from '../components/SkeletonLoader';
-import { 
-  Github, 
-  Twitter, 
-  Globe, 
-  Calendar, 
-  BookOpen, 
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import API from "../utils/api";
+import BlogCard from "../components/BlogCard";
+import { BlogCardSkeleton } from "../components/SkeletonLoader";
+import {
+  GithubIcon,
+  TwitterIcon,
+  Globe,
+  Calendar,
+  BookOpen,
   Award,
-  ChevronLeft
-} from 'lucide-react';
+  ChevronLeft,
+} from "lucide-react";
 
 const AuthorProfile = () => {
   const { id } = useParams();
@@ -31,7 +31,7 @@ const AuthorProfile = () => {
           setPostCount(data.postCount);
         }
       } catch (err) {
-        console.error('Error fetching author profile:', err);
+        console.error("Error fetching author profile:", err);
       } finally {
         setLoading(false);
       }
@@ -45,7 +45,7 @@ const AuthorProfile = () => {
           setBlogs(data.blogs);
         }
       } catch (err) {
-        console.error('Error fetching author blogs:', err);
+        console.error("Error fetching author blogs:", err);
       } finally {
         setBlogsLoading(false);
       }
@@ -71,7 +71,10 @@ const AuthorProfile = () => {
     return (
       <div className="text-center py-20">
         <p className="text-muted text-lg">Author profile not found.</p>
-        <Link to="/" className="inline-block mt-4 text-xs font-bold text-white bg-primary px-4 py-2 rounded-full">
+        <Link
+          to="/"
+          className="inline-block mt-4 text-xs font-bold text-white bg-primary px-4 py-2 rounded-full"
+        >
           Return Home
         </Link>
       </div>
@@ -80,10 +83,12 @@ const AuthorProfile = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
-      
       {/* Back to blogs */}
       <div className="text-left">
-        <Link to="/blogs" className="inline-flex items-center text-xs font-bold text-muted hover:text-secondary transition-colors">
+        <Link
+          to="/blogs"
+          className="inline-flex items-center text-xs font-bold text-muted hover:text-secondary transition-colors"
+        >
           <ChevronLeft className="w-4 h-4 mr-1" />
           Browse Articles
         </Link>
@@ -101,20 +106,26 @@ const AuthorProfile = () => {
 
         <div className="space-y-3 relative z-10 flex-grow text-center md:text-left">
           <div className="flex flex-col md:flex-row md:items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">{profile.name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              {profile.name}
+            </h1>
             <span className="inline-block text-[9px] font-extrabold bg-white/20 px-2 py-0.5 rounded uppercase tracking-wider">
               {profile.role}
             </span>
           </div>
 
           <p className="text-sm text-surface max-w-xl leading-relaxed">
-            {profile.bio || 'Wrote stories and shared viewpoints on BlogVerse.'}
+            {profile.bio || "Wrote stories and shared viewpoints on BlogVerse."}
           </p>
 
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 pt-2 text-xs text-surface">
             <span className="flex items-center gap-1">
               <Calendar className="w-4 h-4 text-secondary" />
-              Joined {new Date(profile.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+              Joined{" "}
+              {new Date(profile.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+              })}
             </span>
             <span className="flex items-center gap-1">
               <BookOpen className="w-4 h-4 text-secondary" />
@@ -127,23 +138,45 @@ const AuthorProfile = () => {
         {profile.socialLinks && (
           <div className="flex md:flex-col items-center gap-3 relative z-10 bg-dark-surface/15 p-4 rounded-2xl border border-dark-border/15 self-center md:self-auto">
             {profile.socialLinks.github && (
-              <a href={`https://github.com/${profile.socialLinks.github}`} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="GitHub">
+              <a
+                href={`https://github.com/${profile.socialLinks.github}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-secondary transition-colors"
+                title="GitHub"
+              >
                 <Github className="w-5 h-5" />
               </a>
             )}
             {profile.socialLinks.twitter && (
-              <a href={`https://twitter.com/${profile.socialLinks.twitter}`} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="Twitter">
+              <a
+                href={`https://twitter.com/${profile.socialLinks.twitter}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-secondary transition-colors"
+                title="Twitter"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
             )}
             {profile.socialLinks.website && (
-              <a href={profile.socialLinks.website} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors" title="Personal Website">
+              <a
+                href={profile.socialLinks.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-secondary transition-colors"
+                title="Personal Website"
+              >
                 <Globe className="w-5 h-5" />
               </a>
             )}
-            {!profile.socialLinks.github && !profile.socialLinks.twitter && !profile.socialLinks.website && (
-              <span className="text-[10px] text-muted font-bold uppercase tracking-wider">Verified User</span>
-            )}
+            {!profile.socialLinks.github &&
+              !profile.socialLinks.twitter &&
+              !profile.socialLinks.website && (
+                <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
+                  Verified User
+                </span>
+              )}
           </div>
         )}
       </section>
@@ -154,7 +187,7 @@ const AuthorProfile = () => {
           <Award className="w-6 h-6 text-secondary dark:text-dark-secondary" />
           Articles by {profile.name}
         </h2>
-        
+
         {blogsLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <BlogCardSkeleton />
@@ -162,7 +195,9 @@ const AuthorProfile = () => {
           </div>
         ) : blogs.length === 0 ? (
           <div className="py-16 text-center border border-dashed rounded-3xl border-border dark:border-dark-border">
-            <p className="text-muted text-sm">This author hasn't published any articles yet.</p>
+            <p className="text-muted text-sm">
+              This author hasn't published any articles yet.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -172,7 +207,6 @@ const AuthorProfile = () => {
           </div>
         )}
       </section>
-
     </div>
   );
 };
