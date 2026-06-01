@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, GithubIcon, TwitterIcon, Globe, Heart } from "lucide-react";
+import { Sparkles, ExternalLink, Share2, Globe, Heart } from "lucide-react";
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -32,8 +32,8 @@ const Footer = () => {
               Discover stories, thinking, and expertise from writers on any device. Share your ideas, build your audience, and join a global network of authors.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-brand-400 transition-colors" aria-label="Twitter"><Twitter className="w-5 h-5" /></a>
-              <a href="#" className="hover:text-brand-400 transition-colors" aria-label="GitHub"><Github className="w-5 h-5" /></a>
+              <a href="#" className="hover:text-brand-400 transition-colors" aria-label="Twitter"><Share2 className="w-5 h-5" /></a>
+              <a href="#" className="hover:text-brand-400 transition-colors" aria-label="GitHub"><ExternalLink className="w-5 h-5" /></a>
               <a href="#" className="hover:text-brand-400 transition-colors" aria-label="Website"><Globe className="w-5 h-5" /></a>
             </div>
           </div>

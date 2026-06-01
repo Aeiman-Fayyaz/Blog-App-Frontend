@@ -4,8 +4,7 @@ import API from "../utils/api";
 import BlogCard from "../components/BlogCard";
 import { BlogCardSkeleton } from "../components/SkeletonLoader";
 import {
-  GithubIcon,
-  TwitterIcon,
+  Link2,
   Globe,
   Calendar,
   BookOpen,
@@ -145,7 +144,7 @@ const AuthorProfile = () => {
                 className="hover:text-secondary transition-colors"
                 title="GitHub"
               >
-                <Github className="w-5 h-5" />
+                <Link2 className="w-5 h-5" />
               </a>
             )}
             {profile.socialLinks.twitter && (
@@ -156,7 +155,7 @@ const AuthorProfile = () => {
                 className="hover:text-secondary transition-colors"
                 title="Twitter"
               >
-                <Twitter className="w-5 h-5" />
+                <Link2 className="w-5 h-5" />
               </a>
             )}
             {profile.socialLinks.website && (

@@ -17,8 +17,7 @@ import {
   Edit2,
   ChevronLeft,
   X,
-  TwitterIcon,
-  LinkedinIcon,
+  ExternalLink,
   Link2,
 } from "lucide-react";
 
@@ -395,14 +394,14 @@ const BlogDetail = () => {
                 className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
                 title="Share on Twitter"
               >
-                <Twitter className="w-3.5 h-3.5" />
+                <Share2 className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={shareOnLinkedIn}
                 className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
                 title="Share on LinkedIn"
               >
-                <Linkedin className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={copyShareLink}
