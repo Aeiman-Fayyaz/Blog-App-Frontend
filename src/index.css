@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-text transition-colors duration-200 font-sans antialiased;
+  }
+  
+  .dark body {
+    @apply bg-dark-background text-dark-text;
+  }
+}
+
+/* Custom modern glassmorphism utility */
+.glass-card {
+  @apply bg-surface/80 backdrop-blur-md border border-border/50 shadow-sm;
+}
+.dark .glass-card {
+  @apply bg-dark-surface/80 backdrop-blur-md border border-dark-border/30 shadow-md;
+}
+
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-dots::before,
+.hero-dots::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  background-image: radial-gradient(circle at 25% 25%, rgba(251, 99, 118, 0.12) 0, transparent 20%),
+                    radial-gradient(circle at 75% 15%, rgba(252, 177, 166, 0.1) 0, transparent 18%),
+                    radial-gradient(circle at 15% 75%, rgba(255, 220, 204, 0.11) 0, transparent 15%),
+                    radial-gradient(circle at 80% 80%, rgba(251, 99, 118, 0.08) 0, transparent 14%);
+  opacity: 0.85;
+  animation: hero-dots-move 18s linear infinite;
+}
+
+.dark .hero-dots::before,
+.dark .hero-dots::after {
+  background-image: radial-gradient(circle at 25% 25%, rgba(255, 220, 204, 0.12) 0, transparent 20%),
+                    radial-gradient(circle at 75% 15%, rgba(252, 177, 166, 0.1) 0, transparent 18%),
+                    radial-gradient(circle at 15% 75%, rgba(251, 99, 118, 0.09) 0, transparent 15%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 220, 204, 0.08) 0, transparent 14%);
+}
+
+.hero-dots::after {
+  width: 140%;
+  height: 140%;
+  background-image: radial-gradient(circle at 30% 30%, rgba(251, 99, 118, 0.1) 0, transparent 16%),
+                    radial-gradient(circle at 70% 20%, rgba(252, 177, 166, 0.08) 0, transparent 12%),
+                    radial-gradient(circle at 20% 70%, rgba(255, 220, 204, 0.09) 0, transparent 13%),
+                    radial-gradient(circle at 65% 80%, rgba(251, 99, 118, 0.07) 0, transparent 11%);
+  animation-duration: 22s;
+  animation-direction: reverse;
+}
+
+.dark .hero-dots::after {
+  background-image: radial-gradient(circle at 30% 30%, rgba(255, 220, 204, 0.1) 0, transparent 16%),
+                    radial-gradient(circle at 70% 20%, rgba(252, 177, 166, 0.08) 0, transparent 12%),
+                    radial-gradient(circle at 20% 70%, rgba(251, 99, 118, 0.09) 0, transparent 13%),
+                    radial-gradient(circle at 65% 80%, rgba(255, 220, 204, 0.07) 0, transparent 11%);
+}
+
+@keyframes hero-dots-move {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  50% {
+    transform: translate(-52%, -48%) rotate(3deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar-track {
+  @apply bg-muted;
+}
+.dark ::-webkit-scrollbar-track {
+  @apply bg-dark-surface;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full transition-colors;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary;
+}
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-dark-border/50 rounded-full;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-secondary;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted;
+}
+.dark ::-webkit-scrollbar-track {
+  @apply bg-dark-surface;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full transition-colors;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary;
+}
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-dark-border/50 rounded-full;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-secondary;
+}
+
+/* Skeleton Loading Animation */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #fff9ec 25%, #ffdccc 50%, #fff9ec 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+.dark .shimmer {
+  background: linear-gradient(90deg, #5d2a42 25%, #6f3351 50%, #5d2a42 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
