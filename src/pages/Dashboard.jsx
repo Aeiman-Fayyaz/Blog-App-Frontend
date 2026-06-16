@@ -1118,7 +1118,7 @@ const Dashboard = () => {
                         <tbody className="divide-y divide-slate-100 dark:divide-dark-850">
                           {adminBlogs.map((b) => (
                             <tr key={b._id} className="hover:bg-slate-50/50">
-                              <td className="px-6 py-4 font-bold text-slate-900 dark:text-white max-w-[200px] truncate">
+                              <td className="px-6 py-4 font-bold text-slate-900 dark:text-primary max-w-[200px] truncate">
                                 {b.title}
                               </td>
                               <td className="px-6 py-4 truncate max-w-[120px]">{b.author?.name || 'Deleted User'}</td>
@@ -1163,7 +1163,7 @@ const Dashboard = () => {
 
                   {/* Create Category Section */}
                   <div className="bg-slate-50 dark:bg-dark-950 p-6 rounded-2xl border border-slate-200/50 dark:border-dark-800/80 space-y-4">
-                    <h3 className="text-md font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <h3 className="text-md font-bold text-slate-900 dark:text-accent flex items-center gap-1.5">
                       <FolderPlus className="w-4 h-4 text-brand-600" /> Add New Topic Category
                     </h3>
 
@@ -1179,7 +1179,7 @@ const Dashboard = () => {
                             placeholder="e.g. Technology"
                             value={newCatName}
                             onChange={(e) => setNewCatName(e.target.value)}
-                            className="w-full text-xs p-2.5 rounded-xl border dark:border-dark-800 bg-white dark:bg-dark-900"
+                            className="w-full text-xs p-2.5 rounded-xl border dark:border-dark-800 bg-white dark:bg-dark-900 text-slate-700"
                             required
                           />
                         </div>
@@ -1190,7 +1190,7 @@ const Dashboard = () => {
                             placeholder="Articles relating to programming & hardware."
                             value={newCatDesc}
                             onChange={(e) => setNewCatDesc(e.target.value)}
-                            className="w-full text-xs p-2.5 rounded-xl border dark:border-dark-800 bg-white dark:bg-dark-900"
+                            className="w-full text-xs p-2.5 rounded-xl border dark:border-dark-800 bg-white dark:bg-dark-900 text-slate-700"
                           />
                         </div>
                         <div className="space-y-1.5 text-left sm:col-span-2">
@@ -1199,7 +1199,7 @@ const Dashboard = () => {
                             {newCatImagePreview && (
                               <img src={newCatImagePreview} alt="Cat Preview" className="w-20 h-12 object-cover rounded" />
                             )}
-                            <label className="px-4 py-2 border rounded-xl text-xs font-semibold hover:bg-white cursor-pointer bg-slate-100 dark:bg-dark-900 dark:border-dark-800">
+                            <label className="px-4 py-2 border rounded-xl text-xs font-semibold hover:bg-white cursor-pointer text-secondary bg-slate-100 dark:bg-dark-900 dark:border-dark-800">
                               Upload File
                               <input
                                 type="file"
@@ -1228,8 +1228,8 @@ const Dashboard = () => {
                           <div className="flex items-center space-x-3 truncate">
                             <img src={c.image} alt={c.name} className="w-10 h-10 object-cover rounded-lg" />
                             <div className="truncate text-left">
-                              <h4 className="font-bold text-xs text-slate-900 dark:text-white truncate">{c.name}</h4>
-                              <span className="text-[9px] text-slate-400 font-semibold">{c.count || 0} blogs published</span>
+                              <h4 className="font-bold text-s text-slate-900 dark:text-black truncate">{c.name}</h4>
+                              <span className="text-[12px] text-slate-400 font-semibold">{c.count || 0} blogs published</span>
                             </div>
                           </div>
                           <button
@@ -1270,13 +1270,13 @@ const Dashboard = () => {
                           <tr key={u._id} className="hover:bg-slate-50/50">
                             <td className="px-6 py-4 flex items-center space-x-2">
                               <img src={u.avatar} alt={u.name} className="w-7 h-7 rounded-full object-cover" />
-                              <span className="font-bold text-slate-900 dark:text-white">{u.name}</span>
+                              <span className="font-bold text-slate-900 dark:text-primary">{u.name}</span>
                             </td>
                             <td className="px-6 py-4 truncate max-w-[150px]">{u.email}</td>
                             <td className="px-6 py-4">
                               <button
                                 onClick={() => handleToggleUserRole(u)}
-                                className={`text-[9px] font-extrabold px-2 py-0.5 rounded uppercase ${u.role === 'admin' ? 'bg-indigo-100 text-indigo-850 dark:bg-indigo-950/40 dark:text-indigo-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}`}
+                                className={`text-[9px] font-extrabold px-2 py-0.5 rounded uppercase ${u.role === 'admin' ? 'bg-indigo-100 text-indigo-850 dark:bg-indigo-950/40 dark:text-indigo-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-white'}`}
                                 title="Click to toggle user role"
                               >
                                 {u.role}
