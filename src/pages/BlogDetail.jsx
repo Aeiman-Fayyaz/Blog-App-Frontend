@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { parseMarkdown } from "../components/RichTextEditor"; // We can import it or re-declare a fast lightweight parser here
+import { confirmDelete } from "../utils/confirmToast";
 import API from "../utils/api";
 import { BlogDetailSkeleton } from "../components/SkeletonLoader";
 import {
@@ -262,19 +264,20 @@ const BlogDetail = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this comment and its replies?",
-      )
-    ) {
+    const confirmed = await confirmDelete("Are you sure you want to delete this comment and its replies?");
+    
+    if (confirmed) {
       try {
         const { data } = await API.delete(`/comments/${commentId}`);
         if (data.success) {
           // Re-fetch comments to clear nested children recursively in database
           fetchComments(blog._id);
+          toast.success("Comment deleted successfully.");
         }
       } catch (error) {
+        const errorMessage = error.response?.data?.message || "Error deleting comment.";
         console.error("Error deleting comment:", error);
+        toast.error(errorMessage);
       }
     }
   };

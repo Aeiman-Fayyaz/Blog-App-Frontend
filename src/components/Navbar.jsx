@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { 
@@ -35,10 +36,15 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    await logout();
+    const result = await logout();
     setProfileDropdownOpen(false);
     setMobileMenuOpen(false);
-    navigate('/');
+    if (result.success) {
+      toast.success(result.message || 'Signed out successfully.');
+      navigate('/');
+    } else {
+      toast.error(result.message || 'Unable to sign out right now.');
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -133,7 +139,7 @@ const Navbar = () => {
                     <div className="absolute right-0 mt-2 w-56 rounded-xl bg-surface dark:bg-dark-surface border border-border dark:border-dark-border shadow-lg py-2 z-20 transition-all transform origin-top-right">
                       <div className="px-4 py-2 border-b border-border dark:border-dark-border">
                         <p className="text-sm font-semibold text-text dark:text-dark-text">{user.name}</p>
-                        <p className="text-xs  dark:text-muted truncate">{user.email}</p>
+                        <p className="text-xs  dark:text-accent truncate">{user.email}</p>
                         <span className="inline-block mt-1 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary dark:bg-dark-primary/20 dark:text-dark-primary">
                           {user.role}
                         </span>
@@ -243,7 +249,7 @@ const Navbar = () => {
                     <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
                     <div className="ml-3">
                       <p className="text-sm font-semibold text-text dark:text-dark-text leading-none">{user.name}</p>
-                      <p className="text-xs text-muted dark:text-dark-muted mt-1">{user.email}</p>
+                      <p className="text-xs text-text dark:text-muted mt-1">{user.email}</p>
                     </div>
                   </div>
                   <Link

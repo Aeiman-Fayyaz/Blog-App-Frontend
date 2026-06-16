@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { 
   User, 
@@ -71,12 +72,16 @@ const Signup = () => {
 
       const res = await signup(name, email, password, avatar);
       if (res.success) {
+        toast.success('Account created successfully! Welcome aboard!');
         navigate('/dashboard');
       } else {
         setError(res.message);
+        toast.error(res.message || 'Signup failed. Please try again.');
       }
     } catch (err) {
-      setError('An unexpected error occurred during signup.');
+      const errorMessage = 'An unexpected error occurred during signup.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

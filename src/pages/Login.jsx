@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import API from '../utils/api';
 import { 
@@ -47,14 +48,17 @@ const Login = () => {
       
       const res = await login(email, password);
       if (res.success) {
-        // Redirect to dashboard or return page
+        toast.success(res.message || 'Logged in successfully!');
         const redirect = searchParams.get('redirect') || '/dashboard';
         navigate(redirect);
       } else {
         setError(res.message);
+        toast.error(res.message || 'Login failed. Please verify credentials.');
       }
     } catch (err) {
-      setError('An unexpected error occurred during login.');
+      const message = 'An unexpected error occurred during login.';
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

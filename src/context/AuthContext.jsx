@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('token', data.token);
         }
       }
-      return { success: true };
+      return { success: true, message: 'Logged in successfully.' };
     } catch (error) {
       return {
         success: false,
@@ -81,8 +81,13 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await API.get('/auth/logout');
+      return { success: true, message: 'Logged out successfully.' };
     } catch (error) {
       console.error('Logout error:', error);
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Logout failed. Please try again.',
+      };
     } finally {
       localStorage.removeItem('token');
       setUser(null);
