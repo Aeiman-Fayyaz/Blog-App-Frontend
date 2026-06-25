@@ -1,8 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, Eye, Clock, Calendar } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import API from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { Heart, Eye, Clock, Calendar, Share2, BookMarked, Users } from 'lucide-react';
 
 const BlogCard = ({ blog }) => {
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+  const [bookmarked, setBookmarked] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+
   const {
     title,
     slug,
@@ -14,12 +22,79 @@ const BlogCard = ({ blog }) => {
     readTime,
     likes = [],
     views = 0,
+    sharedBy = [],
   } = blog;
 
   // Format date helper
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setBookmarked(false);
+      setIsShared(false);
+      return;
+    }
+
+    const savedIds = user.savedBlogs || [];
+    setBookmarked(savedIds.some((id) => id.toString() === blog._id));
+
+    const sharedIds = user.sharedBlogs || [];
+    setIsShared(sharedIds.some((id) => id.toString() === blog._id));
+  }, [user, blog._id]);
+
+  const handleShare = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { data } = await API.post(`/blogs/${blog._id}/share`);
+      if (data.success) {
+        setIsShared(true);
+        if (setUser) {
+          const sharedBlogs = user.sharedBlogs || [];
+          setUser({ ...user, sharedBlogs: [...sharedBlogs, blog._id] });
+        }
+        toast.success(data.message || 'Blog shared to your feed!');
+      } else {
+        toast.error(data.message || 'Unable to share blog.');
+      }
+    } catch (error) {
+      console.error('Error sharing blog:', error);
+      toast.error(error.response?.data?.message || 'Unable to share blog.');
+    }
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { data } = await API.put(`/users/bookmark/${blog._id}`);
+
+      if (data?.success) {
+        setBookmarked(!bookmarked);
+        if (setUser) {
+          const savedBlogs = user.savedBlogs || [];
+          const nextSavedBlogs = bookmarked
+            ? savedBlogs.filter((id) => id.toString() !== blog._id)
+            : [...savedBlogs, blog._id];
+          setUser({ ...user, savedBlogs: nextSavedBlogs });
+        }
+        toast.success(data.message || (bookmarked ? 'Removed from bookmarks.' : 'Added to bookmarks.'));
+      } else {
+        toast.error(data?.message || 'Unable to update bookmark.');
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      toast.error('Unable to update bookmark.');
+    }
   };
 
   return (
@@ -68,11 +143,18 @@ const BlogCard = ({ blog }) => {
           {description}
         </p>
 
+        {/* Shared by indicator */}
+        {isShared && (
+          <div className="mb-3 px-2 py-1 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded text-xs font-semibold text-blue-700 dark:text-blue-300 flex items-center gap-1">
+            <span>🔁</span> You shared this
+          </div>
+        )}
+
         {/* Divider */}
         <div className="border-t border-border dark:border-dark-border/50 my-4" />
 
         {/* Footer Details */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           
           {/* Author info */}
           <Link to={`/author/${author?._id}`} className="flex items-center space-x-2.5 group/author">
@@ -86,16 +168,37 @@ const BlogCard = ({ blog }) => {
             </span>
           </Link>
 
-          {/* Engagement stats */}
-          <div className="flex items-center space-x-3 text-xs text-mutedText dark:text-dark-mutedText">
-            <span className="flex items-center">
-              <Eye className="w-3.5 h-3.5 mr-1 text-accent dark:text-accent" />
-              {views}
-            </span>
-            <span className="flex items-center">
-              <Heart className="w-3.5 h-3.5 mr-1 text-secondary fill-secondary/20" />
-              {likes.length}
-            </span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-3 text-xs text-mutedText dark:text-dark-mutedText">
+              <span className="flex items-center">
+                <Eye className="w-3.5 h-3.5 mr-1 text-accent dark:text-accent" />
+                {views}
+              </span>
+              <span className="flex items-center">
+                <Heart className="w-3.5 h-3.5 mr-1 text-secondary fill-secondary/20" />
+                {likes.length}
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleShare}
+                type="button"
+                className="p-2 rounded-full bg-surface dark:bg-dark-surface border border-border dark:border-dark-border text-text dark:text-dark-text hover:bg-muted dark:hover:bg-dark-900 transition-colors"
+                aria-label="Share on feed"
+              >
+                <Users className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={handleBookmarkToggle}
+                type="button"
+                className={`p-2 rounded-full border transition-colors ${bookmarked ? 'bg-secondary/10 border-secondary text-secondary' : 'bg-surface border-border text-text hover:bg-muted dark:bg-dark-surface dark:border-dark-border dark:text-dark-text dark:hover:bg-dark-900'}`}
+                aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark blog'}
+              >
+                <BookMarked className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
         </div>

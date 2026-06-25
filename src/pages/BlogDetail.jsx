@@ -21,6 +21,8 @@ import {
   X,
   ExternalLink,
   Link2,
+  BookMarked,
+  Users,
 } from "lucide-react";
 
 // Custom markdown parser fallback for self-containment
@@ -96,7 +98,7 @@ const renderMarkdown = (markdown) => {
 
 const BlogDetail = () => {
   const { slug } = useParams();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState(null);
@@ -109,6 +111,8 @@ const BlogDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [shareFeedback, setShareFeedback] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isShared, setIsShared] = useState(false);
 
   // Comment input forms
   const [commentInput, setCommentInput] = useState("");
@@ -125,6 +129,16 @@ const BlogDetail = () => {
         setBlog(data.blog);
         setLikesCount(data.blog.likes.length);
         setIsLiked(user ? data.blog.likes.includes(user._id) : false);
+        setIsBookmarked(
+          user && user.savedBlogs
+            ? user.savedBlogs.some((id) => id.toString() === data.blog._id)
+            : false,
+        );
+        setIsShared(
+          user && user.sharedBlogs
+            ? user.sharedBlogs.some((id) => id.toString() === data.blog._id)
+            : false,
+        );
 
         // Fetch related posts (same category)
         const relRes = await API.get(
@@ -168,6 +182,34 @@ const BlogDetail = () => {
     fetchBlogDetails();
   }, [slug, user]);
 
+  const handleBookmarkToggle = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { data } = await API.put(`/users/bookmark/${blog._id}`);
+      if (data.success) {
+        const nextSavedBlogs = isBookmarked
+          ? (user.savedBlogs || []).filter((id) => id.toString() !== blog._id)
+          : [...(user.savedBlogs || []), blog._id];
+
+        setIsBookmarked(!isBookmarked);
+        setUser({ ...user, savedBlogs: nextSavedBlogs });
+        toast.success(
+          data.message ||
+            (isBookmarked ? 'Removed from bookmarks.' : 'Saved to bookmarks.'),
+        );
+      } else {
+        toast.error(data.message || 'Unable to update bookmark.');
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      toast.error('Unable to update bookmark.');
+    }
+  };
+
   const handleLikeToggle = async () => {
     if (!user) {
       navigate("/login");
@@ -192,13 +234,28 @@ const BlogDetail = () => {
   };
 
   // Social Share Helpers
-  const shareOnTwitter = () => {
-    const text = encodeURIComponent(`Check out "${blog.title}" on BlogVerse!`);
-    const url = encodeURIComponent(window.location.href);
-    window.open(
-      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
-      "_blank",
-    );
+  const shareOnFeed = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const { data } = await API.post(`/blogs/${blog._id}/share`);
+      if (data.success) {
+        setIsShared(true);
+        if (setUser) {
+          const sharedBlogs = user.sharedBlogs || [];
+          setUser({ ...user, sharedBlogs: [...sharedBlogs, blog._id] });
+        }
+        toast.success(data.message || 'Blog shared to your feed!');
+      } else {
+        toast.error(data.message || 'Unable to share blog.');
+      }
+    } catch (error) {
+      console.error('Error sharing blog:', error);
+      toast.error(error.response?.data?.message || 'Unable to share blog.');
+    }
   };
 
   const shareOnLinkedIn = () => {
@@ -326,7 +383,7 @@ const BlogDetail = () => {
       <div>
         <Link
           to="/blogs"
-          className="inline-flex items-center text-xs font-bold text-muted hover:text-secondary transition-colors"
+          className="inline-flex items-center text-xs font-bold text-text dark:text-accent hover:text-secondary transition-colors"
         >
           <ChevronLeft className="w-4 h-4 mr-1" />
           Back to Articles
@@ -343,7 +400,7 @@ const BlogDetail = () => {
         <h1 className="text-3xl sm:text-5xl font-extrabold text-text dark:text-dark-text leading-tight">
           {blog.title}
         </h1>
-        <p className="text-md text-muted dark:text-dark-muted">
+        <p className="text-md text-text dark:text-accent">
           {blog.description}
         </p>
 
@@ -357,14 +414,19 @@ const BlogDetail = () => {
                 className="w-12 h-12 rounded-full object-cover border border-border dark:border-dark-border"
               />
             </Link>
-            <div>
+            <div className="space-y-1">
               <Link
                 to={`/author/${blog.author?._id}`}
-                className="font-bold text-text dark:text-dark-text hover:text-secondary"
+                className="font-bold text-text dark:text-dark-text hover:text-secondary block"
               >
                 {blog.author?.name}
               </Link>
-              <div className="flex items-center text-xs text-muted space-x-3 mt-0.5">
+              {isShared && (
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold flex items-center gap-1">
+                  <span>🔁</span> You shared this
+                </span>
+              )}
+              <div className="flex items-center text-xs text-accent space-x-3 mt-0.5">
                 <span className="flex items-center">
                   <Calendar className="w-3.5 h-3.5 mr-1" />{" "}
                   {new Date(blog.createdAt).toLocaleDateString("en-US", {
@@ -393,25 +455,33 @@ const BlogDetail = () => {
 
             <div className="relative flex items-center space-x-2 bg-muted dark:bg-dark-800 p-1 rounded-full border border-border/50 dark:border-dark-border">
               <button
-                onClick={shareOnTwitter}
-                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
-                title="Share on Twitter"
+                onClick={shareOnFeed}
+                disabled={isShared}
+                className={`p-1.5 rounded-full transition-colors ${isShared ? 'bg-blue-50 dark:bg-blue-950 border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 cursor-not-allowed' : 'hover:bg-surface dark:hover:bg-dark-surface text-primary hover:text-secondary'}`}
+                title={isShared ? 'Already shared' : 'Share on Feed'}
               >
-                <Share2 className="w-3.5 h-3.5" />
+                <Users className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={shareOnLinkedIn}
-                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
+                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-primary hover:text-secondary"
                 title="Share on LinkedIn"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={copyShareLink}
-                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
+                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-primary hover:text-secondary"
                 title="Copy link"
               >
                 <Link2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={handleBookmarkToggle}
+                className={`p-1.5 rounded-full border transition-colors ${isBookmarked ? 'bg-secondary/10 border-secondary text-secondary' : 'border-border dark:border-dark-border text-primary hover:bg-surface dark:hover:bg-dark-surface'}`}
+                title={isBookmarked ? 'Remove bookmark' : 'Bookmark this blog'}
+              >
+                <BookMarked className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -455,7 +525,7 @@ const BlogDetail = () => {
               {blog.author?.role}
             </span>
           </div>
-          <p className="text-sm text-muted dark:text-dark-muted">
+          <p className="text-sm text-primary dark:text-accent">
             {blog.author?.bio ||
               "Author on BlogVerse. Check out their recent published writings."}
           </p>
