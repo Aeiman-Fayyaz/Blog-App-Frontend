@@ -387,8 +387,8 @@ const BlogDetail = () => {
 
   // Extract headings from markdown content for TOC
   const headings = extractHeadings(blog.content);
-};
-return (
+
+  return (
   <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-10">
     {/* Back button */}
     <div>
@@ -1107,6 +1107,7 @@ return (
       </section>
     )}
   </div>
-);
+  );
+};
 
 export default BlogDetail;
