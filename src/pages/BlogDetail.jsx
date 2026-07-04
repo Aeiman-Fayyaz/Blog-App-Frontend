@@ -20,12 +20,6 @@ import {
   X,
   ExternalLink,
   Link2,
-  Bookmark,
-  Users,
-  Compass,
-  ArrowRight,
-  List,
-  Repeat
 } from "lucide-react";
 
 // Slugify helper to map TOC hashes
@@ -241,28 +235,14 @@ const BlogDetail = () => {
     setTimeout(() => setShareFeedback(""), 3000);
   };
 
-  const shareOnFeed = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const { data } = await API.post(`/blogs/${blog._id}/share`);
-      if (data.success) {
-        setIsShared(true);
-        if (setUser) {
-          const sharedBlogs = user.sharedBlogs || [];
-          setUser({ ...user, sharedBlogs: [...sharedBlogs, blog._id] });
-        }
-        toast.success(data.message || 'Blog shared to your feed!');
-      } else {
-        toast.error(data.message || 'Unable to share blog.');
-      }
-    } catch (error) {
-      console.error('Error sharing blog:', error);
-      toast.error(error.response?.data?.message || 'Unable to share blog.');
-    }
+  // Social Share Helpers
+  const shareOnTwitter = () => {
+    const text = encodeURIComponent(`Check out "${blog.title}" on BlogVerse!`);
+    const url = encodeURIComponent(window.location.href);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      "_blank",
+    );
   };
 
   const shareOnLinkedIn = () => {
@@ -384,79 +364,65 @@ const BlogDetail = () => {
   const headings = extractHeadings(blog.content);
 
   return (
-    <div className="relative pb-24">
-      
-      {/* Reading Progress Indicator Bar */}
-      <div className="fixed top-16 left-0 right-0 h-1 bg-surface dark:bg-dark-surface/30 z-50">
-        <motion.div 
-          className="h-full bg-gradient-to-r from-primary to-secondary"
-          style={{ width: `${scrollProgress}%` }}
-        />
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+      {/* Back button */}
+      <div>
+        <Link
+          to="/blogs"
+          className="inline-flex items-center text-xs font-bold text-muted hover:text-secondary transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Back to Articles
+        </Link>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        
-        {/* Back Link */}
-        <div className="mb-8 text-left">
-          <Link
-            to="/blogs"
-            className="inline-flex items-center text-xs font-bold text-mutedText hover:text-primary transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Back to Articles
-          </Link>
-        </div>
+      {/* Blog Details Header */}
+      <header className="space-y-4">
+        {blog.category && (
+          <span className="inline-block text-xs font-bold uppercase tracking-wider px-3 py-1 rounded bg-muted/60 text-text dark:bg-dark-surface dark:text-dark-text">
+            {blog.category.name}
+          </span>
+        )}
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-text dark:text-dark-text leading-tight">
+          {blog.title}
+        </h1>
+        <p className="text-md text-muted dark:text-dark-muted">
+          {blog.description}
+        </p>
 
-        {/* Hero Section Container */}
-        <header className="max-w-4xl mx-auto text-left space-y-6 mb-10">
-          
-          {blog.category && (
-            <span className="inline-block text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full bg-primary/10 text-primary">
-              {blog.category.name}
-            </span>
-          )}
-
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-text dark:text-dark-text tracking-tight leading-tight">
-            {blog.title}
-          </h1>
-
-          <p className="text-base sm:text-lg text-mutedText dark:text-dark-mutedText font-medium leading-relaxed">
-            {blog.description}
-          </p>
-
-          {/* Author Details Header */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-y border-border/80 dark:border-dark-border/40 py-5 mt-8">
-            <div className="flex items-center space-x-3.5">
-              <Link to={`/author/${blog.author?._id}`}>
-                <img
-                  src={blog.author?.avatar}
-                  alt={blog.author?.name}
-                  className="w-11 h-11 rounded-full object-cover border border-border/60 dark:border-dark-border/30 hover:border-primary/50 transition-colors"
-                />
+        {/* Author information header */}
+        <div className="flex items-center justify-between flex-wrap gap-4 border-y border-border dark:border-dark-border/80 py-4 mt-6">
+          <div className="flex items-center space-x-3">
+            <Link to={`/author/${blog.author?._id}`}>
+              <img
+                src={blog.author?.avatar}
+                alt={blog.author?.name}
+                className="w-12 h-12 rounded-full object-cover border border-border dark:border-dark-border"
+              />
+            </Link>
+            <div>
+              <Link
+                to={`/author/${blog.author?._id}`}
+                className="font-bold text-text dark:text-dark-text hover:text-secondary"
+              >
+                {blog.author?.name}
               </Link>
-              <div className="text-left">
-                <Link
-                  to={`/author/${blog.author?._id}`}
-                  className="font-bold text-sm text-text dark:text-dark-text hover:text-primary transition-colors block"
-                >
-                  {blog.author?.name}
-                </Link>
-                <div className="flex items-center text-xs text-mutedText space-x-3.5 mt-1 font-semibold">
-                  <span className="flex items-center">
-                    <Calendar className="w-3.5 h-3.5 mr-1 text-primary/70" />
-                    {new Date(blog.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                  <span className="flex items-center">
-                    <Clock className="w-3.5 h-3.5 mr-1 text-primary/70" />
-                    {blog.readTime} min read
-                  </span>
-                </div>
+              <div className="flex items-center text-xs text-muted space-x-3 mt-0.5">
+                <span className="flex items-center">
+                  <Calendar className="w-3.5 h-3.5 mr-1" />{" "}
+                  {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+                <span className="flex items-center">
+                  <Clock className="w-3.5 h-3.5 mr-1" /> {blog.readTime} min
+                  read
+                </span>
               </div>
             </div>
+          </div>
 
             {/* Top Share Actions Row */}
             <div className="flex items-center space-x-3">
@@ -472,48 +438,31 @@ const BlogDetail = () => {
                 <span>{likesCount} Likes</span>
               </button>
 
-              <div className="flex items-center space-x-1.5 bg-muted/40 dark:bg-dark-surface/50 px-2 py-1 rounded-full border border-border/60 dark:border-dark-border/40">
-                <button
-                  onClick={shareOnFeed}
-                  disabled={isShared}
-                  className={`p-1.5 rounded-full transition-colors ${
-                    isShared 
-                      ? 'bg-primary/10 text-primary' 
-                      : 'text-mutedText hover:text-primary hover:bg-surface dark:hover:bg-dark-surface'
-                  }`}
-                  title={isShared ? 'Already shared' : 'Share to feed'}
-                >
-                  <Repeat className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={shareOnLinkedIn}
-                  className="p-1.5 rounded-full text-mutedText hover:text-primary hover:bg-surface dark:hover:bg-dark-surface transition-all"
-                  title="Share on LinkedIn"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={copyShareLink}
-                  className="p-1.5 rounded-full text-mutedText hover:text-primary hover:bg-surface dark:hover:bg-dark-surface transition-all"
-                  title="Copy Link"
-                >
-                  <Link2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={handleBookmarkToggle}
-                  className={`p-1.5 rounded-full transition-colors ${
-                    isBookmarked 
-                      ? 'text-primary' 
-                      : 'text-mutedText hover:text-primary hover:bg-surface dark:hover:bg-dark-surface'
-                  }`}
-                  title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Article'}
-                >
-                  <Bookmark className="w-3.5 h-3.5" />
-                </button>
-              </div>
+            <div className="relative flex items-center space-x-2 bg-muted dark:bg-dark-800 p-1 rounded-full border border-border/50 dark:border-dark-border">
+              <button
+                onClick={shareOnTwitter}
+                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
+                title="Share on Twitter"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={shareOnLinkedIn}
+                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
+                title="Share on LinkedIn"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={copyShareLink}
+                className="p-1.5 rounded-full hover:bg-surface dark:hover:bg-dark-surface text-muted hover:text-secondary"
+                title="Copy link"
+              >
+                <Link2 className="w-3.5 h-3.5" />
+              </button>
             </div>
-
           </div>
+        </div>
 
           {shareFeedback && (
             <div className="text-right text-xs font-bold text-primary animate-pulse pt-2">
@@ -575,28 +524,28 @@ const BlogDetail = () => {
               dangerouslySetInnerHTML={{ __html: renderMarkdown(blog.content) }}
             />
 
-            {/* Author Footer Bio Card */}
-            <section className="bg-surface/50 dark:bg-dark-surface/20 border border-border/40 dark:border-dark-border/40 p-6 sm:p-8 rounded-3xl flex flex-col sm:flex-row items-center sm:items-start gap-5 mt-10">
-              <img
-                src={blog.author?.avatar}
-                alt={blog.author?.name}
-                className="w-16 h-16 rounded-full object-cover border-2 border-primary/20 shadow-md shrink-0"
-              />
-              <div className="space-y-2 flex-grow text-center sm:text-left">
-                <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2">
-                  <h4 className="font-extrabold text-base sm:text-lg text-text dark:text-dark-text">
-                    Written by {blog.author?.name}
-                  </h4>
-                  <span className="text-[9px] uppercase tracking-wider bg-primary/10 text-primary px-2.5 py-0.5 rounded-full font-bold">
-                    {blog.author?.role || 'Author'}
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-mutedText dark:text-dark-mutedText leading-relaxed">
-                  {blog.author?.bio ||
-                    "Contributor at Narrato. Follow to read the latest tech insights and comprehensive guides from this author."}
-                </p>
-              </div>
-            </section>
+      {/* Author Card Info at Bottom */}
+      <section className="bg-surface dark:bg-dark-surface border border-border dark:border-dark-border p-6 rounded-3xl flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img
+          src={blog.author?.avatar}
+          alt={blog.author?.name}
+          className="w-16 h-16 rounded-full object-cover border-2 border-secondary/20 shadow"
+        />
+        <div className="space-y-2 flex-grow text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <h4 className="font-extrabold text-lg text-text dark:text-dark-text">
+              Written by {blog.author?.name}
+            </h4>
+            <span className="text-[10px] bg-muted dark:bg-dark-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider text-muted">
+              {blog.author?.role}
+            </span>
+          </div>
+          <p className="text-sm text-muted dark:text-dark-muted">
+            {blog.author?.bio ||
+              "Author on BlogVerse. Check out their recent published writings."}
+          </p>
+        </div>
+      </section>
 
             {/* Comment Discussions */}
             <section className="space-y-6 pt-12">

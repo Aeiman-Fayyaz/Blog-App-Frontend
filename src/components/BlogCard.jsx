@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+<<<<<<< HEAD
 import { motion } from 'framer-motion';
 import API from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Heart, Eye, Clock, Calendar, Bookmark, Share2, ArrowUpRight, Repeat } from 'lucide-react';
+=======
+import API from '../utils/api';
+import { useAuth } from '../context/AuthContext';
+import { Heart, Eye, Clock, Calendar, Share2, BookMarked, Users } from 'lucide-react';
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
 
 const BlogCard = ({ blog }) => {
   const { user, setUser } = useAuth();
@@ -24,6 +30,7 @@ const BlogCard = ({ blog }) => {
     readTime,
     likes = [],
     views = 0,
+    sharedBy = [],
   } = blog;
 
   // Format date helper
@@ -40,6 +47,7 @@ const BlogCard = ({ blog }) => {
     }
 
     const savedIds = user.savedBlogs || [];
+<<<<<<< HEAD
     setBookmarked(savedIds.some((id) => id.toString() === _id));
 
     const sharedIds = user.sharedBlogs || [];
@@ -49,18 +57,35 @@ const BlogCard = ({ blog }) => {
   const handleShare = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+=======
+    setBookmarked(savedIds.some((id) => id.toString() === blog._id));
+
+    const sharedIds = user.sharedBlogs || [];
+    setIsShared(sharedIds.some((id) => id.toString() === blog._id));
+  }, [user, blog._id]);
+
+  const handleShare = async () => {
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
     if (!user) {
       navigate('/login');
       return;
     }
 
     try {
+<<<<<<< HEAD
       const { data } = await API.post(`/blogs/${_id}/share`);
+=======
+      const { data } = await API.post(`/blogs/${blog._id}/share`);
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
       if (data.success) {
         setIsShared(true);
         if (setUser) {
           const sharedBlogs = user.sharedBlogs || [];
+<<<<<<< HEAD
           setUser({ ...user, sharedBlogs: [...sharedBlogs, _id] });
+=======
+          setUser({ ...user, sharedBlogs: [...sharedBlogs, blog._id] });
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
         }
         toast.success(data.message || 'Blog shared to your feed!');
       } else {
@@ -72,24 +97,37 @@ const BlogCard = ({ blog }) => {
     }
   };
 
+<<<<<<< HEAD
   const handleBookmarkToggle = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+=======
+  const handleBookmarkToggle = async () => {
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
     if (!user) {
       navigate('/login');
       return;
     }
 
     try {
+<<<<<<< HEAD
       const { data } = await API.put(`/users/bookmark/${_id}`);
+=======
+      const { data } = await API.put(`/users/bookmark/${blog._id}`);
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
 
       if (data?.success) {
         setBookmarked(!bookmarked);
         if (setUser) {
           const savedBlogs = user.savedBlogs || [];
           const nextSavedBlogs = bookmarked
+<<<<<<< HEAD
             ? savedBlogs.filter((id) => id.toString() !== _id)
             : [...savedBlogs, _id];
+=======
+            ? savedBlogs.filter((id) => id.toString() !== blog._id)
+            : [...savedBlogs, blog._id];
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
           setUser({ ...user, savedBlogs: nextSavedBlogs });
         }
         toast.success(data.message || (bookmarked ? 'Removed from bookmarks.' : 'Added to bookmarks.'));
@@ -161,9 +199,14 @@ const BlogCard = ({ blog }) => {
 
         {/* Shared by indicator */}
         {isShared && (
+<<<<<<< HEAD
           <div className="mb-4 px-2.5 py-1 bg-primary/10 border border-primary/20 rounded-lg text-[10px] font-bold text-primary dark:text-dark-primary flex items-center gap-1.5 self-start">
             <Repeat className="w-3 h-3 animate-spin" style={{ animationDuration: '6s' }} />
             You shared this
+=======
+          <div className="mb-3 px-2 py-1 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded text-xs font-semibold text-blue-700 dark:text-blue-300 flex items-center gap-1">
+            <span>🔁</span> You shared this
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
           </div>
         )}
 
@@ -185,6 +228,7 @@ const BlogCard = ({ blog }) => {
             </span>
           </Link>
 
+<<<<<<< HEAD
           {/* Views, Likes, Share & Bookmark Actions */}
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-2 text-[11px] text-mutedText dark:text-dark-mutedText/80 mr-1 select-none">
@@ -194,10 +238,21 @@ const BlogCard = ({ blog }) => {
               </span>
               <span className="flex items-center">
                 <Heart className="w-3.5 h-3.5 mr-0.5 text-secondary fill-secondary/15" />
+=======
+          <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-3 text-xs text-mutedText dark:text-dark-mutedText">
+              <span className="flex items-center">
+                <Eye className="w-3.5 h-3.5 mr-1 text-accent dark:text-accent" />
+                {views}
+              </span>
+              <span className="flex items-center">
+                <Heart className="w-3.5 h-3.5 mr-1 text-secondary fill-secondary/20" />
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
                 {likes.length}
               </span>
             </div>
 
+<<<<<<< HEAD
             <button
               onClick={handleShare}
               type="button"
@@ -219,6 +274,27 @@ const BlogCard = ({ blog }) => {
             >
               <Bookmark className="w-3.5 h-3.5" />
             </button>
+=======
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleShare}
+                type="button"
+                className="p-2 rounded-full bg-surface dark:bg-dark-surface border border-border dark:border-dark-border text-text dark:text-dark-text hover:bg-muted dark:hover:bg-dark-900 transition-colors"
+                aria-label="Share on feed"
+              >
+                <Users className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={handleBookmarkToggle}
+                type="button"
+                className={`p-2 rounded-full border transition-colors ${bookmarked ? 'bg-secondary/10 border-secondary text-secondary' : 'bg-surface border-border text-text hover:bg-muted dark:bg-dark-surface dark:border-dark-border dark:text-dark-text dark:hover:bg-dark-900'}`}
+                aria-label={bookmarked ? 'Remove bookmark' : 'Bookmark blog'}
+              >
+                <BookMarked className="w-4 h-4" />
+              </button>
+            </div>
+>>>>>>> 68400d72b7adfbfdf5e801d1ebdc74d9ff733f5b
           </div>
 
         </div>
