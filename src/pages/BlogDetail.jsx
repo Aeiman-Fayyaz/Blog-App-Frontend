@@ -489,7 +489,7 @@ const BlogDetail = () => {
               className={`p-1.5 rounded-full border transition-colors ${isBookmarked ? "bg-secondary/10 border-secondary text-secondary" : "border-border dark:border-dark-border text-primary hover:bg-surface dark:hover:bg-dark-surface"}`}
               title={isBookmarked ? "Remove bookmark" : "Bookmark this blog"}
             >
-              <BookMarked className="w-3.5 h-3.5" />
+              <Bookmark className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
