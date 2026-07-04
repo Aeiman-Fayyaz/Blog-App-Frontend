@@ -44,16 +44,6 @@ const renderMarkdown = (markdown) => {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  // Code blocks
-  html = html.replace(
-    /```([\s\S]*?)```/g,
-    '<pre class="bg-muted dark:bg-dark-surface/50 p-5 rounded-2xl text-xs font-mono overflow-x-auto text-text dark:text-dark-text my-6 border border-border/40 dark:border-dark-border/40 leading-relaxed"><code>$1</code></pre>',
-  );
-  html = html.replace(
-    /`([^`\n]+)`/g,
-    '<code class="bg-muted dark:bg-dark-surface px-1.5 py-0.5 rounded-md text-xs font-mono text-primary font-bold">$1</code>',
-  );
-
   // Headers (injecting matching IDs)
   html = html.replace(/^### (.*?)$/gm, (_, text) => {
     return `<h3 id="${slugify(text)}" class="scroll-mt-24 text-md sm:text-lg font-bold text-text dark:text-dark-text mt-8 mb-3">${text}</h3>`;
@@ -65,49 +55,7 @@ const renderMarkdown = (markdown) => {
     return `<h1 id="${slugify(text)}" class="scroll-mt-24 text-xl sm:text-2xl font-black text-text dark:text-dark-text mt-12 mb-5">${text}</h1>`;
   });
 
-  // Blockquotes
-  html = html.replace(
-    /^> (.*?)$/gm,
-    '<blockquote class="border-l-4 border-primary pl-5 py-2 italic bg-primary/5 text-mutedText dark:text-dark-mutedText my-6 rounded-r-xl">$1</blockquote>',
-  );
-
-  // Images
-  html = html.replace(
-    /!\[(.*?)\]\((.*?)\)/g,
-    '<div class="my-8 overflow-hidden rounded-3xl border border-border/40 dark:border-dark-border/40 shadow-md"><img src="$2" alt="$1" class="w-full object-cover hover:scale-101 transition-all duration-500" /></div>',
-  );
-
-  // Links
-  html = html.replace(
-    /\[(.*?)\]\((.*?)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-secondary font-bold underline transition-colors">$1</a>',
-  );
-
-  // Lists
-  html = html.replace(
-    /^\s*[-*]\s+(.*?)$/gm,
-    '<li class="ml-6 list-disc text-text/90 dark:text-dark-text/90 mb-2 leading-relaxed">$1</li>',
-  );
-
-  // Bold / Italic
-  html = html.replace(
-    /\*\*([^*]+)\*\*/g,
-    '<strong class="font-extrabold text-text dark:text-dark-text">$1</strong>',
-  );
-  html = html.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
-
-  // Paragraph wrappers
-  html = html.replace(
-    /^(?!<[a-z]+)/gm,
-    '<p class="mb-5 text-text/90 dark:text-dark-text/90 leading-relaxed text-sm sm:text-base">$1</p>',
-  );
-
-  // Clean list wrap
-  html = html.replace(
-    /(<li>.*?<\/li>)/gs,
-    '<ul class="my-5 space-y-1">$1</ul>',
-  );
-
+  
   // Decode basic safe tags
   html = html
     .replace(/&lt;a /g, "<a ")

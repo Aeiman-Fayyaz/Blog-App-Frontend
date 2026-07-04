@@ -140,13 +140,6 @@ const Navbar = () => {
                 <motion.div layoutId="nav-indicator" className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full" />
               )}
             </Link>
-
-            <a 
-              href="#footer"
-              className="text-sm font-medium text-text/80 dark:text-dark-text/80 hover:text-primary dark:hover:text-dark-primary transition-colors"
-            >
-              About
-            </a>
           </div>
 
           {/* Right Action buttons */}
