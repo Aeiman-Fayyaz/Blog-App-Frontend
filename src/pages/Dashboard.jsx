@@ -10,7 +10,7 @@ import {
   LayoutDashboard, 
   BookOpen, 
   PlusSquare, 
-  BookMarked, 
+  Bookmark, 
   Settings, 
   Users, 
   FolderPlus, 
@@ -552,7 +552,7 @@ const Dashboard = () => {
               onClick={() => changeTab('bookmarks')}
               className={`flex w-full items-center px-3 py-2 text-sm font-semibold rounded-xl transition-all ${activeTab === 'bookmarks' ? 'bg-primary/10 dark:bg-primary/5 text-primary dark:text-primary' : 'text-text hover:bg-surface dark:text-dark-text dark:hover:bg-dark-surface/40'}`}
             >
-              <BookMarked className="w-4 h-4 mr-2.5" />
+              <Bookmark className="w-4 h-4 mr-2.5" />
               Bookmarks
             </button>
             <button

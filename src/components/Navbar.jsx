@@ -14,7 +14,7 @@ import {
   User, 
   PlusSquare, 
   LayoutDashboard, 
-  BookMarked,
+  Bookmark,
   Sparkles,
   ChevronDown,
   TrendingUp,
@@ -214,7 +214,7 @@ const Navbar = () => {
                           onClick={() => setProfileDropdownOpen(false)}
                           className="flex items-center px-4 py-2 text-sm text-text/80 dark:text-dark-text/80 hover:bg-muted dark:hover:bg-dark-background/50 hover:text-primary transition-colors"
                         >
-                          <BookMarked className="w-4 h-4 mr-2.5" />
+                          <Bookmark className="w-4 h-4 mr-2.5" />
                           Bookmarks
                         </Link>
 
@@ -352,7 +352,7 @@ const Navbar = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center px-3 py-2 rounded-xl text-sm font-semibold text-text/80 dark:text-dark-text/80 hover:bg-muted dark:hover:bg-dark-background/50"
                     >
-                      <BookMarked className="w-4 h-4 mr-2" />
+                      <Bookmark className="w-4 h-4 mr-2" />
                       Bookmarks
                     </Link>
                     <button
