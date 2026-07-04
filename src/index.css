@@ -7,6 +7,7 @@
 @layer base {
   body {
     @apply bg-background text-text transition-colors duration-200 font-sans antialiased;
+    scroll-behavior: smooth;
   }
   
   .dark body {
@@ -14,106 +15,70 @@
   }
 }
 
-/* Custom modern glassmorphism utility */
+/* Premium glassmorphism layout utility */
 .glass-card {
-  @apply bg-surface/80 backdrop-blur-md border border-border/50 shadow-sm;
+  @apply bg-surface/70 backdrop-blur-md border border-border/40 shadow-sm transition-all duration-300;
 }
 .dark .glass-card {
-  @apply bg-dark-surface/80 backdrop-blur-md border border-dark-border/30 shadow-md;
+  @apply bg-dark-surface/50 backdrop-blur-md border border-dark-border/40 shadow-md transition-all duration-300;
 }
 
-.hero-dots {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+/* Grid & dot textures */
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(239, 99, 81, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(239, 99, 81, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.dark .grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(239, 99, 81, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(239, 99, 81, 0.035) 1px, transparent 1px);
 }
 
-.hero-dots::before,
-.hero-dots::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  transform: translate(-50%, -50%);
-  background-image: radial-gradient(circle at 25% 25%, rgba(251, 99, 118, 0.12) 0, transparent 20%),
-                    radial-gradient(circle at 75% 15%, rgba(252, 177, 166, 0.1) 0, transparent 18%),
-                    radial-gradient(circle at 15% 75%, rgba(255, 220, 204, 0.11) 0, transparent 15%),
-                    radial-gradient(circle at 80% 80%, rgba(251, 99, 118, 0.08) 0, transparent 14%);
-  opacity: 0.85;
-  animation: hero-dots-move 18s linear infinite;
+.dot-bg {
+  background-image: radial-gradient(rgba(239, 99, 81, 0.09) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.dark .dot-bg {
+  background-image: radial-gradient(rgba(239, 99, 81, 0.07) 1px, transparent 1px);
 }
 
-.dark .hero-dots::before,
-.dark .hero-dots::after {
-  background-image: radial-gradient(circle at 25% 25%, rgba(255, 220, 204, 0.12) 0, transparent 20%),
-                    radial-gradient(circle at 75% 15%, rgba(252, 177, 166, 0.1) 0, transparent 18%),
-                    radial-gradient(circle at 15% 75%, rgba(251, 99, 118, 0.09) 0, transparent 15%),
-                    radial-gradient(circle at 80% 80%, rgba(255, 220, 204, 0.08) 0, transparent 14%);
+.noise-bg {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%2523noise)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+}
+.dark .noise-bg {
+  opacity: 0.03;
 }
 
-.hero-dots::after {
-  width: 140%;
-  height: 140%;
-  background-image: radial-gradient(circle at 30% 30%, rgba(251, 99, 118, 0.1) 0, transparent 16%),
-                    radial-gradient(circle at 70% 20%, rgba(252, 177, 166, 0.08) 0, transparent 12%),
-                    radial-gradient(circle at 20% 70%, rgba(255, 220, 204, 0.09) 0, transparent 13%),
-                    radial-gradient(circle at 65% 80%, rgba(251, 99, 118, 0.07) 0, transparent 11%);
-  animation-duration: 22s;
-  animation-direction: reverse;
-}
-
-.dark .hero-dots::after {
-  background-image: radial-gradient(circle at 30% 30%, rgba(255, 220, 204, 0.1) 0, transparent 16%),
-                    radial-gradient(circle at 70% 20%, rgba(252, 177, 166, 0.08) 0, transparent 12%),
-                    radial-gradient(circle at 20% 70%, rgba(251, 99, 118, 0.09) 0, transparent 13%),
-                    radial-gradient(circle at 65% 80%, rgba(255, 220, 204, 0.07) 0, transparent 11%);
-}
-
-@keyframes hero-dots-move {
+/* Infinite Marquee Scroll Animation */
+@keyframes marquee {
   0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  50% {
-    transform: translate(-52%, -48%) rotate(3deg);
+    transform: translateX(0%);
   }
   100% {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translateX(-50%);
   }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar-track {
-  @apply bg-muted;
-}
-.dark ::-webkit-scrollbar-track {
-  @apply bg-dark-surface;
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-border rounded-full transition-colors;
-}
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-secondary;
-}
-.dark ::-webkit-scrollbar-thumb {
-  @apply bg-dark-border/50 rounded-full;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-dark-secondary;
-}
-
+/* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
   @apply bg-muted;
 }
 .dark ::-webkit-scrollbar-track {
-  @apply bg-dark-surface;
+  @apply bg-dark-background;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -123,13 +88,13 @@
   @apply bg-secondary;
 }
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-dark-border/50 rounded-full;
+  @apply bg-dark-border rounded-full;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-dark-secondary;
+  @apply bg-primary;
 }
 
-/* Skeleton Loading Animation */
+/* Skeleton Loading Shimmer */
 @keyframes skeleton-shimmer {
   0% {
     background-position: -200% 0;
@@ -140,13 +105,38 @@
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #fff9ec 25%, #ffdccc 50%, #fff9ec 75%);
+  background: linear-gradient(90deg, #ffe3e0 25%, #fbc3bc 50%, #ffe3e0 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
 }
 
 .dark .shimmer {
-  background: linear-gradient(90deg, #5d2a42 25%, #6f3351 50%, #5d2a42 75%);
+  background: linear-gradient(90deg, #1c1211 25%, #291917 50%, #1c1211 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Premium Card hover glow effect */
+.hover-glow {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -10px rgba(239, 99, 81, 0.12);
+  border-color: rgba(239, 99, 81, 0.25);
+}
+
+.dark .hover-glow:hover {
+  box-shadow: 0 12px 40px -10px rgba(239, 99, 81, 0.2);
+  border-color: rgba(239, 99, 81, 0.35);
 }

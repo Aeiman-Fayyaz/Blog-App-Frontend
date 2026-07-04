@@ -23,15 +23,15 @@ export default {
         },
 
         dark: {
-          background: "#2B1B18",
-          surface: "#3A2521",
+          background: "#0C0807",
+          surface: "#140D0C",
           primary: "#EF6351",
           secondary: "#F38375",
           accent: "#F7A399",
-          text: "#FFE3E0",
-          border: "#FBC3BC",
-          muted: "#4A312D",
-          mutedText: "#FBC3BC",
+          text: "#F5EBEA",
+          border: "#291917",
+          muted: "#1C1211",
+          mutedText: "#B59995",
         },
 
         background: "#FFF8F7",

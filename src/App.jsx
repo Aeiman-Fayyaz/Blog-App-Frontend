@@ -6,6 +6,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CursorGlow from './components/CursorGlow';
 import Home from './pages/Home';
 import Blogs from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
@@ -21,6 +22,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="flex flex-col min-h-screen bg-background dark:bg-dark-background text-text dark:text-dark-text transition-colors duration-200">
+            <CursorGlow />
             <Navbar />
             
             {/* Main view injection */}
